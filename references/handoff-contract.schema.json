@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codex.skills/presentation-report-preflight/handoff-contract.schema.json",
+  "title": "Universal Handoff Contract",
+  "description": "Schema for the Presentation Strategy Brief handoff contract produced by presentation-report-preflight. YAML keys are English and machine-stable. Convert the contract YAML to JSON to validate. Enums are strict; nested structures stay permissive so downstream skills may extend them.",
+  "type": "object",
+  "required": [
+    "brief_tier",
+    "run_mode",
+    "output_language",
+    "handoff_mode",
+    "adapter_resolution",
+    "deck_intent",
+    "runtime_plan",
+    "slide_plan",
+    "constraints",
+    "references_consulted",
+    "open_questions"
+  ],
+  "properties": {
+    "brief_tier": { "enum": ["lite", "full"] },
+    "run_mode": { "enum": ["interactive", "autonomous"] },
+    "output_language": {
+      "type": "string",
+      "description": "Language tag for the human-readable layer and on-slide copy, e.g. zh, en, zh-Hant."
+    },
+    "handoff_mode": { "enum": ["universal_only", "universal_plus_adapter"] },
+    "adapter_resolution": {
+      "type": "object",
+      "required": ["requested", "resolved", "status"],
+      "properties": {
+        "requested": { "type": "string", "description": "Downstream skill the user named, normalized; 'none' if not named." },
+        "resolved": { "type": "string", "description": "Skill actually found in this environment; 'none' if not found." },
+        "status": { "enum": ["matched", "unavailable", "none"] }
+      },
+      "additionalProperties": true
+    },
+    "deck_intent": {
+      "type": "object",
+      "required": ["scenario", "audience", "desired_action"],
+      "properties": {
+        "scenario": { "type": "string" },
+        "audience": { "type": "string" },
+        "desired_action": { "type": "string" },
+        "success_criteria": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "narrative": {
+      "type": "object",
+      "required": ["framework"],
+      "additionalProperties": true
+    },
+    "runtime_plan": {
+      "type": "object",
+      "required": ["total_duration", "slide_count_target"],
+      "additionalProperties": true
+    },
+    "slide_plan": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["slide", "title", "job"],
+        "properties": {
+          "slide": { "type": ["integer", "string"] },
+          "title": { "type": "string" },
+          "job": { "type": "string" },
+          "spec_density": { "enum": ["full", "compact"] },
+          "content_spec": {
+            "type": "object",
+            "properties": {
+              "content_role": {
+                "enum": ["hook", "setup", "proof", "explanation", "comparison", "case", "demo", "transition", "cta", "appendix"]
+              },
+              "primary_message": { "type": "string" },
+              "constraints": {
+                "type": "object",
+                "properties": {
+                  "placeholder_policy": { "enum": ["honest_placeholder", "block_until_provided"] }
+                },
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "evidence_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "claim_or_metric", "source_status"],
+        "properties": {
+          "id": { "type": "string" },
+          "claim_or_metric": { "type": "string" },
+          "source": { "type": "string" },
+          "source_status": { "enum": ["verified", "user_reported", "assumed", "to_verify"] },
+          "comparison_baseline": { "type": "string" },
+          "recommended_chart": { "type": "string" },
+          "caveat": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "speaker_plan": { "type": "object", "additionalProperties": true },
+    "visual_intent": { "type": "object", "additionalProperties": true },
+    "asset_plan": {
+      "type": "object",
+      "properties": {
+        "catalog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "status"],
+            "properties": {
+              "id": { "type": "string" },
+              "status": { "enum": ["provided", "extractable", "to_fetch", "to_generate", "placeholder", "unavailable"] }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["language"],
+      "additionalProperties": true
+    },
+    "must_keep": { "type": "array" },
+    "must_avoid": { "type": "array" },
+    "references_consulted": { "type": "array", "items": { "type": "string" } },
+    "open_questions": { "type": "array" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "brief_tier": { "const": "full" } } },
+      "then": {
+        "required": ["narrative", "evidence_plan", "speaker_plan", "visual_intent", "asset_plan", "must_keep", "must_avoid"]
+      }
+    },
+    {
+      "if": { "properties": { "handoff_mode": { "const": "universal_plus_adapter" } } },
+      "then": {
+        "properties": {
+          "adapter_resolution": {
+            "properties": { "status": { "const": "matched" } }
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": true
+}

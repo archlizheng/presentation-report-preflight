@@ -1,0 +1,4 @@
+interface:
+  display_name: "汇报型演示前置策划"
+  short_description: "先定汇报策略，再交给 PPT 生成 skill 执行"
+  default_prompt: "Use $presentation-report-preflight to turn my topic, source doc, or old deck into a Presentation Strategy Brief before generating slides."
