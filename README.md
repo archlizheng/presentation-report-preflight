@@ -6,6 +6,34 @@
 
 ---
 
+## 安装
+
+本仓库根目录即一个标准 skill（含 `SKILL.md`），可用开源的 [`skills` CLI](https://github.com/vercel-labs/skills)（支持 Claude Code、Codex、Cursor、OpenCode 等）一键安装：
+
+```bash
+# 安装到当前项目
+npx skills add archlizheng/presentation-report-preflight
+
+# 安装到用户级（全局，跨项目可用）
+npx skills add archlizheng/presentation-report-preflight -g
+
+# 只装给指定 agent（如 Codex / Claude Code）
+npx skills add archlizheng/presentation-report-preflight -a codex
+npx skills add archlizheng/presentation-report-preflight -a claude-code
+```
+
+安装后，CLI 会自动检测 skill、拷贝文件到对应 agent 的 skills 目录，无需手动配置。常用管理命令：
+
+```bash
+npx skills list          # 查看已安装的 skill
+npx skills update         # 更新全部 skill
+npx skills remove presentation-report-preflight   # 卸载
+```
+
+> 也可以直接 `git clone` 本仓库，把整个目录放进你的 skills 目录（如 `~/.codex/skills/` 或 `~/.claude/skills/`）。
+
+---
+
 ## 它解决什么问题
 
 大多数"AI 做 PPT"的失败，不在于不好看，而在于**没想清楚就开始排版**：
