@@ -4,6 +4,8 @@
 >
 > 这是一个**上游策划 Skill**：它不画 PPT，而是把一个主题、一份源文档、一份旧 deck、一个 PDF、一堆数据或笔记，转成一份结构化、可交接的 **Presentation Strategy Brief（演示策略简报）**，再交给下游的幻灯片生成 skill 执行。
 
+> 🇬🇧 English version: [README.en.md](./README.en.md)
+
 ---
 
 ## 安装
